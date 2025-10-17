@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+:root {
+  --gray-300: #e0e0e0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--gray-300);
+  font-family: "Roboto", sans-serif;
+  height: 100vh;
+  width: 100%;
+}
