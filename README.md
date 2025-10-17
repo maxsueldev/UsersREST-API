@@ -29,3 +29,20 @@ O sistema é uma aplicação web de gerenciamento de usuários, construída com 
    * Uso de JWT (JSON Web Token) para autenticação.
    * Persistência do login no navegador via localStorage.
    * Possibilidade de implementar logout removendo token e usuário do localStorage.
+
+## Arquitetura e Estrutura
+1. Frontend
+   * React + TypeScript: Tipagem forte para maior segurança e prevenção de erros.
+   * React Router: Navegação entre páginas públicas (/login, /register) e privadas (/system).
+   * Hooks:
+      * useState para gerenciamento de estados (email, senha, loading, error).
+      * useEffect para redirecionamento automático de usuários logados.
+   * Componentização: Formulários e elementos reutilizáveis (ex.: <Header />).
+   * MUI + Tailwind CSS: Combinação de componentes prontos (MUI) com utilitários de estilo rápido e responsivo (Tailwind).
+2. Backend (suporte)
+   * API RESTful (Node.js/Express) com endpoints para:
+      * /register → criar usuário
+      * /login → autenticar usuário
+   * Uso de bcrypt para hash de senhas.
+   * Uso de JWT para gerar tokens de sessão com expiração.
+   * Validações de campos obrigatórios e prevenção de duplicidade de emails.
