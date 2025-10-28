@@ -1,5 +1,6 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
+  Alert,
   Button,
   CircularProgress,
   FormControl,
@@ -7,18 +8,22 @@ import {
   Input,
   InputAdornment,
   InputLabel,
+  Snackbar,
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useUsers } from "../../hooks/useUsers";
+import { useSnackbarAlert } from "../../hooks/useSnackbarAlert";
 
 const Login = () => {
-  const [email, setEmail] = useState<string>();
-  const [password, setPassword] = useState<string>();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const { checkLogin, email, setEmail, password, setPassword, loading, error } =
+    useUsers();
+
+  const { handleCloseAlert, openAlert } = useSnackbarAlert();
 
   const navigate = useNavigate();
 
@@ -27,7 +32,7 @@ const Login = () => {
     const user = localStorage.getItem("user");
 
     if (token && user) {
-      navigate("/system");
+      navigate("/");
     }
   }, [navigate]);
 
@@ -36,45 +41,6 @@ const Login = () => {
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
-  };
-
-  const checkLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setLoading(true);
-
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        setError("Email ou senha inválido");
-        setEmail("");
-        setPassword("");
-        setLoading(false);
-        return;
-      }
-
-      const data = await response.json();
-      const { user, token } = data;
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      navigate("/system");
-    } catch (err: any) {
-      console.log(err);
-      setError("Erro no servidor");
-      setEmail("");
-      setPassword("");
-      setLoading(false);
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
@@ -113,7 +79,7 @@ const Login = () => {
         </FormControl>
 
         {loading && <CircularProgress className="mt-6" />}
-        {error && <p className="text-red-400 mt-4">{error}</p>}
+        {/* {error && <p className="text-red-400 mt-4">{error}</p>} */}
 
         <Button
           variant="contained"
@@ -129,6 +95,22 @@ const Login = () => {
           Cadastrar
         </Link>
       </form>
+
+      <Snackbar
+        open={openAlert.open}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity={openAlert.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {openAlert.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

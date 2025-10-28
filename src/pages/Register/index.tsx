@@ -1,56 +1,29 @@
 import {
+  Alert,
   Button,
   FormControl,
   Input,
   InputLabel,
+  Snackbar,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useUsers } from "../../hooks/useUsers";
+import { useSnackbarAlert } from "../../hooks/useSnackbarAlert";
 
 const Register = () => {
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const {
+    registerUser,
+    name,
+    setName,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    error,
+  } = useUsers();
 
-  const navigate = useNavigate();
-
-  const registerUser = async (formData: FormData) => {
-    const name = formData.get("name");
-    const email = formData.get("email");
-    const password = formData.get("password");
-
-    if (!name || !email || !password) {
-      setError("Preencha todos os campos para cadastrar");
-      return;
-    }
-
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      if (!response.ok) {
-        setError("Houve um erro nos dados");
-        setName("");
-        setEmail("");
-        setPassword("");
-        return;
-      }
-
-      // const data = await response.json();
-
-      navigate("/login");
-    } catch (error) {
-      setError("Erro no servidor");
-      return;
-    }
-  };
+  const { openAlert, handleCloseAlert } = useSnackbarAlert();
 
   return (
     <div className="h-screen flex justify-center items-center">
@@ -86,7 +59,7 @@ const Register = () => {
           />
         </FormControl>
 
-        {error && <p className="text-red-400 mt-4">{error}</p>}
+        {/* {error && <p className="text-red-400 mt-4">{error}</p>} */}
 
         <Button variant="contained" sx={{ m: 3 }} type="submit" color="success">
           Cadastrar
@@ -96,6 +69,22 @@ const Register = () => {
           Login
         </Link>
       </form>
+
+      <Snackbar
+        open={openAlert.open}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity={openAlert.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {openAlert.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
