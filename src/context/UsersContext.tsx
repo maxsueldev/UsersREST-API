@@ -9,7 +9,9 @@ interface UsersContextType {
   updateUser: (user: User) => Promise<User>;
   deleteUser: (id: string) => void;
   handleUpdate: () => void;
+  handleEditUser: (id: string) => void;
   getUserFromLocalStorage: () => void;
+  handleDeleteUser: (id: string) => void;
   logout: () => void;
   getUsers: () => Promise<void>;
   users: User[];
@@ -221,6 +223,39 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
     setEditMode(false);
   };
 
+  const handleEditUser = async (id: string) => {
+    const user = users.find((u) => u._id === id);
+    if (!user) return;
+    const newName = prompt("Novo nome:", user.name);
+    const newEmail = prompt("Novo email:", user.email);
+    if (newName && newEmail) {
+      try {
+        const updatedUser = await updateUser({
+          ...user,
+          name: newName,
+          email: newEmail,
+        });
+
+        setUsers((prev) =>
+          prev.map((u) => (u._id === updatedUser._id ? updatedUser : u))
+        );
+
+        setOpenAlert({
+          open: true,
+          message: "Usuário alterado com sucesso!",
+          severity: "success",
+        });
+      } catch (error) {
+        setOpenAlert({
+          open: true,
+          message: `Erro ao atualizar usuário: ${error}`,
+          severity: "error",
+        });
+        console.error("Erro ao atualizar usuário:", error);
+      }
+    }
+  };
+
   const getUserFromLocalStorage = () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -260,7 +295,51 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
     navigate("/login");
   };
 
-  const deleteUser = () => {};
+  const handleDeleteUser = (id: string) => {
+    if (confirm("Deseja excluir este usuário?")) deleteUser(id);
+  };
+
+  const deleteUser = async (id: string) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/users/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Erro ao deletar usuário:", response.status);
+
+        setOpenAlert({
+          open: true,
+          message: `Erro ao deletar usuário: ${response.status}`,
+          severity: "error",
+        });
+      }
+
+      setOpenAlert({
+        open: true,
+        message: `Usuário deletado com sucesso!`,
+        severity: "success",
+      });
+
+      setUsers((prev) => prev.filter((u) => u._id !== id));
+
+      return response.json();
+    } catch (error) {
+      console.error("Erro no servidor: ", error);
+
+      setOpenAlert({
+        open: true,
+        message: `Erro no servidor: ${error}`,
+        severity: "error",
+      });
+    }
+  };
 
   return (
     <UsersContext.Provider
@@ -270,7 +349,9 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
         updateUser,
         deleteUser,
         handleUpdate,
+        handleEditUser,
         getUserFromLocalStorage,
+        handleDeleteUser,
         logout,
         getUsers,
         users,

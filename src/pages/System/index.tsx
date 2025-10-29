@@ -8,49 +8,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useSnackbarAlert } from "../../hooks/useSnackbarAlert";
 
 const System = () => {
-  const { getUsers, users, updateUser, deleteUser, setUsers } = useUsers();
-  const { openAlert, setOpenAlert, handleCloseAlert } = useSnackbarAlert();
+  const { getUsers, users, handleDeleteUser, handleEditUser } = useUsers();
+  const { openAlert, handleCloseAlert } = useSnackbarAlert();
 
   useEffect(() => {
     getUsers();
   }, []);
-
-  const handleEditUser = async (id: string) => {
-    const user = users.find((u) => u._id === id);
-    if (!user) return;
-    const newName = prompt("Novo nome:", user.name);
-    const newEmail = prompt("Novo email:", user.email);
-    if (newName && newEmail) {
-      try {
-        const updatedUser = await updateUser({
-          ...user,
-          name: newName,
-          email: newEmail,
-        });
-
-        setUsers((prev) =>
-          prev.map((u) => (u._id === updatedUser._id ? updatedUser : u))
-        );
-
-        setOpenAlert({
-          open: true,
-          message: "Usuário alterado com sucesso!",
-          severity: "success",
-        });
-      } catch (error) {
-        setOpenAlert({
-          open: true,
-          message: `Erro ao atualizar usuário: ${error}`,
-          severity: "error",
-        });
-        console.error("Erro ao atualizar usuário:", error);
-      }
-    }
-  };
-
-  const handleDeleteUser = (id: string) => {
-    if (confirm("Deseja excluir este usuário?")) deleteUser(id);
-  };
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 70 },
@@ -88,7 +51,7 @@ const System = () => {
 
   return (
     <div className="flex gap-4 flex-wrap">
-      <Card className="max-w-[300px] mt-10 px-10">
+      <Card className="max-w-[300px] mt-10 px-10 flex justify-center items-center">
         <CardContent>
           <h2 className="text-4xl font-bold text-center">
             {users.length} Usuários
@@ -96,7 +59,7 @@ const System = () => {
         </CardContent>
       </Card>
 
-      <Card className="w-full mt-6 px-10">
+      <Card className="max-w-[700px] mt-6 px-10">
         <CardContent>
           <DataGrid
             rows={rows}
