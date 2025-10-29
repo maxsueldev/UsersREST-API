@@ -6,6 +6,8 @@ import { useSnackbarAlert } from "../hooks/useSnackbarAlert";
 interface UsersContextType {
   checkLogin: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
   registerUser: (formData: FormData) => Promise<void>;
+  updateUser: (user: User) => Promise<User>;
+  deleteUser: (id: string) => void;
   handleUpdate: () => void;
   getUserFromLocalStorage: () => void;
   logout: () => void;
@@ -258,11 +260,15 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
     navigate("/login");
   };
 
+  const deleteUser = () => {};
+
   return (
     <UsersContext.Provider
       value={{
         checkLogin,
         registerUser,
+        updateUser,
+        deleteUser,
         handleUpdate,
         getUserFromLocalStorage,
         logout,
