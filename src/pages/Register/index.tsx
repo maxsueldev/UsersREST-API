@@ -20,7 +20,6 @@ const Register = () => {
     setEmail,
     password,
     setPassword,
-    error,
   } = useUsers();
 
   const { openAlert, handleCloseAlert } = useSnackbarAlert();

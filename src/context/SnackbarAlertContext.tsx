@@ -41,7 +41,7 @@ export const SnackbarAlertProvider = ({
   });
 
   const handleCloseAlert = (
-    event?: SyntheticEvent | Event,
+    _event?: SyntheticEvent | Event,
     reason?: string
   ) => {
     if (reason === "clickaway") {

@@ -20,7 +20,7 @@ import { useSnackbarAlert } from "../../hooks/useSnackbarAlert";
 const Login = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const { checkLogin, email, setEmail, password, setPassword, loading, error } =
+  const { checkLogin, email, setEmail, password, setPassword, loading } =
     useUsers();
 
   const { handleCloseAlert, openAlert } = useSnackbarAlert();
