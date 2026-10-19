@@ -31,7 +31,7 @@ interface UsersContextType {
 }
 
 export const UsersContext = createContext<UsersContextType | undefined>(
-  undefined
+  undefined,
 );
 
 interface UsersProviderProps {
@@ -134,15 +134,19 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
       });
 
       if (!response.ok) {
-        setError("Houve um erro nos dados");
+        const data = await response.json().catch(() => null);
+
+        const mensagem =
+          data?.message || data?.error || "Houve um erro nos dados";
+
+        setError(mensagem);
+
         setOpenAlert({
           open: true,
-          message: "Houve um erro nos dados",
+          message: mensagem,
           severity: "error",
         });
-        setName("");
-        setEmail("");
-        setPassword("");
+
         return;
       }
 
@@ -179,7 +183,7 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(user),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -237,7 +241,7 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
         });
 
         setUsers((prev) =>
-          prev.map((u) => (u._id === updatedUser._id ? updatedUser : u))
+          prev.map((u) => (u._id === updatedUser._id ? updatedUser : u)),
         );
 
         setOpenAlert({
@@ -308,7 +312,7 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (!response.ok) {
