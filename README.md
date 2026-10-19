@@ -4,13 +4,17 @@ Aplicação web de gerenciamento de usuários desenvolvida com React e TypeScrip
 
 Desenvolvido como projeto pessoal de estudo, com foco na prática de desenvolvimento Front-End, integração com APIs e construção de interfaces responsivas.
 
-## Capturas de Tela
 
-<img width="1365" height="767" alt="users-rest-api1" src="https://github.com/user-attachments/assets/49bd9d53-5e33-4905-8bc1-58fb6b614fd4" />
+## 📸 Capturas de tela
 
-<img width="1361" height="765" alt="users-rest-api2" src="https://github.com/user-attachments/assets/42c9bfd7-186a-46ef-bae6-661fc3fc168b" />
+### Login
+![Tela de login](./screenshots/login.png)
 
-<img width="1363" height="767" alt="users-rest-api3" src="https://github.com/user-attachments/assets/890a87a8-1184-4bef-8994-d52d8ce8b35c" />
+### Cadastro
+![Tela de cadastro](./screenshots/cadastro.png)
+
+### Sistema autenticado
+![Tela principal do sistema](./screenshots/sistema.png)
 
 ## Demonstração
 
